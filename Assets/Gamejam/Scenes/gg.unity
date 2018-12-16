@@ -322,19 +322,19 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
-  - {fileID: 445073326}
-  - {fileID: 559647557}
+  - {fileID: 210815691}
+  - {fileID: 2066278084}
+  - {fileID: 2032107450}
   - {fileID: 1948151192}
   - {fileID: 1571313099}
-  - {fileID: 2032107450}
+  - {fileID: 753527434}
+  - {fileID: 652451986}
+  - {fileID: 648389445}
+  - {fileID: 559647557}
+  - {fileID: 445073326}
   - {fileID: 379333242}
   - {fileID: 292134889}
   - {fileID: 242261515}
-  - {fileID: 210815691}
-  - {fileID: 2066278084}
-  - {fileID: 652451986}
-  - {fileID: 753527434}
-  - {fileID: 648389445}
   m_Father: {fileID: 1236382919}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -973,6 +973,12 @@ MonoBehaviour:
   DisplayedScoreTwo: {fileID: 349671359}
   DisplayedMiddleText: {fileID: 1764440185}
   Map: {fileID: 246768065}
+  PlayerOneCursor: {fileID: 2800000, guid: 3ac109cba75e1dd41999bd3abb262d38, type: 3}
+  PlayerTwoCursor: {fileID: 2800000, guid: 280d6c4d5e805e1489b218d821d9a8cc, type: 3}
+  PlayerOneCursorClicked: {fileID: 2800000, guid: fe0055fd91931ef479552f840a24f149,
+    type: 3}
+  PlayerTwoCursorClicked: {fileID: 2800000, guid: e8cd88cd5543678448a607019ad4ed3e,
+    type: 3}
   BumpAnimationCurve:
     serializedVersion: 2
     m_Curve:
