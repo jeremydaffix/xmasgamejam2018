@@ -17,6 +17,10 @@ public class GameplayScript : MonoBehaviour {
     public Text DisplayedScoreOne;
     public Text DisplayedScoreTwo;
     public Text DisplayedMiddleText;
+    public Texture2D PlayerOneCursor;
+    public Texture2D PlayerTwoCursor;
+    public Texture2D PlayerOneCursorClicked;
+    public Texture2D PlayerTwoCursorClicked;
 
     [Header("Score Animation")]
     public AnimationCurve BumpAnimationCurve;
@@ -38,6 +42,7 @@ public class GameplayScript : MonoBehaviour {
     void Start () {
         IsInGame = true;
         PlayerOneTurn = true;
+        UpdateCursor();
         GameEnded = false;
         StartCoroutine(OnBeginGame());
         ScoreMax = 300; //TODO update
@@ -49,6 +54,7 @@ public class GameplayScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        UpdateCursor();
         if (!GameEnded)
         {
             if (!IsInGame)
@@ -59,9 +65,8 @@ public class GameplayScript : MonoBehaviour {
             }
             else
             {
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonUp(0))
                 {
-                    Debug.Log("Pressed primary button." + Input.mousePosition);
                     int WonScore = CalcScore(Input.mousePosition, currentKdo);
                     if (PlayerOneTurn)
                     {
@@ -76,6 +81,7 @@ public class GameplayScript : MonoBehaviour {
                         Debug.Log("Two: " + ScoreTwo);
                     }
                     PlayerOneTurn = !PlayerOneTurn; //switch player
+                    SwitchCursor();
                     IsInGame = false;
                     if (ScoreOne >= ScoreMax || ScoreTwo >= ScoreMax) //Fin du jeu
                     {
@@ -155,13 +161,6 @@ public class GameplayScript : MonoBehaviour {
 
 
 
-
-
-
-
-
-
-
     public int CalcScore(Vector3 posMouse, Kdo kdo)
     {
         int score = 0;
@@ -183,5 +182,42 @@ public class GameplayScript : MonoBehaviour {
         score = (diff + 1) * scoreDist * 10;
   
         return score;
-    }                                                                                                                 
+    } 
+    
+    private void UpdateCursor()
+    {
+        if (PlayerOneTurn)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Cursor.SetCursor(PlayerOneCursorClicked, Vector2.zero, CursorMode.ForceSoftware);
+                if (Input.GetMouseButtonUp(0))
+                {
+                    Cursor.SetCursor(PlayerOneCursor, Vector2.zero, CursorMode.ForceSoftware);
+                }
+            }
+        } else
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Cursor.SetCursor(PlayerTwoCursorClicked, Vector2.zero, CursorMode.ForceSoftware);
+                if (Input.GetMouseButtonUp(0))
+                {
+                    Cursor.SetCursor(PlayerTwoCursor, Vector2.zero, CursorMode.ForceSoftware);
+                }
+            }
+        }
+    }
+
+    private void SwitchCursor()
+    {
+        if (PlayerOneTurn)
+        {
+           Cursor.SetCursor(PlayerOneCursor, Vector2.zero, CursorMode.ForceSoftware);
+        }
+        else
+        {
+            Cursor.SetCursor(PlayerTwoCursor, Vector2.zero, CursorMode.ForceSoftware);
+        }
+    }
 }
