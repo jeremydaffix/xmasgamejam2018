@@ -32,50 +32,66 @@ public class GameplayScript : MonoBehaviour {
     private bool IsInGame;
     private Kdo currentKdo;
     private bool PlayerOneTurn;
+    private bool GameEnded;
 
     // Use this for initialization
     void Start () {
         IsInGame = true;
         PlayerOneTurn = true;
+        GameEnded = false;
         StartCoroutine(OnBeginGame());
-        ScoreMax = 30; //TODO update
+        ScoreMax = 300; //TODO update
         ScoreOne = 0;
         ScoreTwo = 0;
-        StartCoroutine(UpdateScoreOne());
-        StartCoroutine(UpdateScoreTwo());
+        DisplayedScoreOne.text = ScoreOne.ToString();
+        DisplayedScoreTwo.text = ScoreTwo.ToString();
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (!IsInGame)
+        if (!GameEnded)
         {
-            currentKdo = Kdo.DrawKdo(0);
-            StartCoroutine(DisplayCountry(currentKdo.City.name));
-            IsInGame = true;
+            if (!IsInGame)
+            {
+                currentKdo = Kdo.DrawKdo(0);
+                StartCoroutine(DisplayCountry(currentKdo.City.name));
+                IsInGame = true;
+            }
+            else
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Debug.Log("Pressed primary button." + Input.mousePosition);
+                    int WonScore = CalcScore(Input.mousePosition, currentKdo);
+                    if (PlayerOneTurn)
+                    {
+                        ScoreOne += WonScore;
+                        DisplayedScoreOne.text = ScoreOne.ToString();
+                        Debug.Log("One: " + ScoreOne);
+                    }
+                    else
+                    {
+                        ScoreTwo += WonScore;
+                        DisplayedScoreTwo.text = ScoreTwo.ToString();
+                        Debug.Log("Two: " + ScoreTwo);
+                    }
+                    PlayerOneTurn = !PlayerOneTurn; //switch player
+                    IsInGame = false;
+                    if (ScoreOne >= ScoreMax || ScoreTwo >= ScoreMax) //Fin du jeu
+                    {
+                        GameEnded = true;
+                    }
+                }
+            }
         } else
-        {
+        { //if Game is finished display score and retry
+            string player = "1";
+            if (ScoreTwo >= ScoreMax) { player = "2"; }
+            StartCoroutine(DisplayMiddleText("Joueur " + player + " gagnant!"));
             if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log("Pressed primary button." + Input.mousePosition);
-                if (PlayerOneTurn)
-                {
-                    //ScoreOne += 10; //TODO add score here
-                    ScoreOne += CalcScore(Input.mousePosition, currentKdo);
-                    UpdateScoreOne();
-                } else
-                {
-                    //ScoreTwo += 10; //TODO add score here
-                    ScoreOne += CalcScore(Input.mousePosition, currentKdo);
-                    UpdateScoreTwo();
-                }
-                PlayerOneTurn = !PlayerOneTurn; //switch player
-                IsInGame = false;
-                if(ScoreOne >= ScoreMax || ScoreTwo >= ScoreMax)
-                {
-                    string player = "1";
-                    if (ScoreTwo >= ScoreMax) { player = "2"; }
-                    StartCoroutine(DisplayMiddleText("Joueur " + player + " gagnant!"));
-                }
+                GameEnded = false;
+                ResetGame();
             }
         }
     }
@@ -97,46 +113,6 @@ public class GameplayScript : MonoBehaviour {
         }
     }
 
-    private IEnumerator UpdateScoreOne()
-    {
-        BumpElapsed = 0.0f;
-        Vector3 bumpedScale = new Vector3(BumpMagnitude, BumpMagnitude, 0.0f);
-        Vector3 minScale = new Vector3(1.0f, 1.0f, 1.0f);
-        //DisplayedScoreOne.transform.localScale = minScale;
-        while (BumpElapsed != BumpDuration)
-        {
-            yield return new WaitForEndOfFrame();
-            BumpElapsed = Mathf.Clamp(BumpElapsed + Time.deltaTime, 0.0f, BumpDuration);
-            float value = BumpAnimationCurve.Evaluate(BumpElapsed / BumpDuration);
-            if (value >= 0.5f)
-                DisplayedScoreOne.text = ScoreOne.ToString();
-            //DisplayedScoreOne.transform.localScale = minScale + bumpedScale * value;
-            DisplayedScoreOne.color = Color.Lerp(Color.white, BumpColor, value);
-
-        }
-        yield return null;
-    }
-
-    private IEnumerator UpdateScoreTwo()
-    {
-        BumpElapsed = 0.0f;
-        Vector3 bumpedScale = new Vector3(BumpMagnitude, BumpMagnitude, 0.0f);
-        Vector3 minScale = new Vector3(1.0f, 1.0f, 1.0f);
-        //DisplayedScoreTwo.transform.localScale = minScale;
-        while (BumpElapsed != BumpDuration)
-        {
-            yield return new WaitForEndOfFrame();
-            BumpElapsed = Mathf.Clamp(BumpElapsed + Time.deltaTime, 0.0f, BumpDuration);
-            float value = BumpAnimationCurve.Evaluate(BumpElapsed / BumpDuration);
-            if (value >= 0.5f)
-                DisplayedScoreTwo.text = ScoreTwo.ToString();
-            //DisplayedScoreTwo.transform.localScale = minScale + bumpedScale * value;
-            DisplayedScoreTwo.color = Color.Lerp(Color.white, BumpColor, value);
-
-        }
-        yield return null;
-    }
-
     private IEnumerator DisplayMiddleText(string message)
     {
         DisplayedMiddleText.text = message;
@@ -150,7 +126,6 @@ public class GameplayScript : MonoBehaviour {
             RiseInElapsed = Mathf.Clamp(RiseInElapsed + Time.deltaTime, 0.0f, RiseInDuration);
             float scale = RiseInAnimationCurve.Evaluate(RiseInElapsed / RiseInDuration);
             DisplayedMiddleText.transform.localScale = minScale + new Vector3(1.0f - min, 1.0f - min, 0.0f) * scale;
-
         }
     }
 
@@ -158,14 +133,24 @@ public class GameplayScript : MonoBehaviour {
     {
         //TODO add sound for 3 2 1 Go
         IsInGame = true; //block input
-        StartCoroutine(DisplayCountry("3"));
+        StartCoroutine(DisplayMiddleText("3"));
         yield return new WaitForSeconds(1.0f);
-        StartCoroutine(DisplayCountry("2"));
+        StartCoroutine(DisplayMiddleText("2"));
         yield return new WaitForSeconds(1.0f);
-        StartCoroutine(DisplayCountry("1"));
+        StartCoroutine(DisplayMiddleText("1"));
         yield return new WaitForSeconds(1.0f);
+        StartCoroutine(DisplayMiddleText(""));
         Kdo.GenerateKdos();
         IsInGame = false;
+    }
+
+    private void ResetGame()
+    {
+        ScoreOne = 0;
+        ScoreTwo = 0;
+        DisplayedScoreOne.text = ScoreOne.ToString();
+        DisplayedScoreTwo.text = ScoreTwo.ToString();
+        StartCoroutine(OnBeginGame());
     }
 
 
@@ -186,7 +171,6 @@ public class GameplayScript : MonoBehaviour {
         float dist = Vector3.Distance(posMouse, posKdo);
         int diff = kdo.Difficulty;
 
-
         // score entre 0 et 120
 
         int scoreDist = 0;
@@ -197,13 +181,7 @@ public class GameplayScript : MonoBehaviour {
         else scoreDist = 0;
 
         score = (diff + 1) * scoreDist * 10;
-
-
-        Debug.Log("***CALCSCORE***");
-        Debug.Log(dist);
-        Debug.Log(score);
-
-
+  
         return score;
     }                                                                                                                 
 }
