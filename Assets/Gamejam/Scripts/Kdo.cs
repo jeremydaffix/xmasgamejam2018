@@ -10,6 +10,8 @@ public class Kdo {
     public static List<Kdo> Kdos2 = new List<Kdo>();
     public static List<Kdo> Kdos3 = new List<Kdo>();
 
+    public static bool KdoInitialized = false;
+
 
     string name;
     Image photo;
@@ -38,6 +40,8 @@ public class Kdo {
 
         new Kdo("Oulan Bator", 2);
         new Kdo("Sucre", 2);
+
+        KdoInitialized = true;
     }
 
 

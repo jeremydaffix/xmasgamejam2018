@@ -44,6 +44,8 @@ public class GameplayScript : MonoBehaviour {
 
     public SoundSystem SoundSystem;
 
+    public GameObject Facile, Moyen, Difficile;
+
     bool flagShake = false;
 
 
@@ -58,20 +60,45 @@ public class GameplayScript : MonoBehaviour {
         ScoreMax = 300; //TODO update
         ScoreOne = 0;
         ScoreTwo = 0;
-        DisplayedScoreOne.text = ScoreOne.ToString();
-        DisplayedScoreTwo.text = ScoreTwo.ToString();
+        DisplayedScoreOne.text = ScoreOne.ToString() + " / 300";
+        DisplayedScoreTwo.text = ScoreTwo.ToString() + " / 300";
     }
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (!Kdo.KdoInitialized) return;
+
         UpdateCursor();
         if (!GameEnded)
         {
             if (!IsInGame)
             {
-                currentKdo = Kdo.DrawKdo(Random.Range(0,3));
+                int diff = Random.Range(0, 3);
+                currentKdo = Kdo.DrawKdo(diff);
                 StartCoroutine(DisplayCountry(currentKdo.City.name));
                 IsInGame = true;
+
+                if(diff == 0)
+                {
+                    Facile.SetActive(true);
+                    Moyen.SetActive(false);
+                    Difficile.SetActive(false);
+                }
+
+                else if (diff == 1)
+                {
+                    Facile.SetActive(false);
+                    Moyen.SetActive(true);
+                    Difficile.SetActive(false);
+                }
+
+                else
+                {
+                    Facile.SetActive(false);
+                    Moyen.SetActive(false);
+                    Difficile.SetActive(true);
+                }
             }
             else
             {
@@ -81,14 +108,16 @@ public class GameplayScript : MonoBehaviour {
                     if (PlayerOneTurn)
                     {
                         ScoreOne += WonScore;
-                        DisplayedScoreOne.text = ScoreOne.ToString();
+                        DisplayedScoreOne.text = ScoreOne.ToString() + " / 300";
                         //Debug.Log("One: " + ScoreOne);
+                        if(ScoreOne >= 300) SoundSystem.PlayVictory();
                     }
                     else
                     {
                         ScoreTwo += WonScore;
-                        DisplayedScoreTwo.text = ScoreTwo.ToString();
+                        DisplayedScoreTwo.text = ScoreTwo.ToString() + " / 300";
                         //Debug.Log("Two: " + ScoreTwo);
+                        if (ScoreTwo >= 300) SoundSystem.PlayVictory();
                     }
                     PlayerOneTurn = !PlayerOneTurn; //switch player
                     SwitchCursor();
@@ -160,6 +189,25 @@ public class GameplayScript : MonoBehaviour {
 
     private IEnumerator OnBeginGame()
     {
+        Kdo.KdoInitialized = false;
+        Kdo.Kdos1.Clear();
+        Kdo.Kdos2.Clear();
+        Kdo.Kdos3.Clear();
+
+        iTween.ShakePosition(Map, iTween.Hash("x", 10.0f, "time", 1.0f, "delay", 0.0f));
+        //iTween.ShakePosition(Map, iTween.Hash("y", 50.0f, "time", 1.5f, "delay", 0.0f));
+
+        //UpdateCursor();
+
+        if (PlayerOneTurn)
+        {
+            Cursor.SetCursor(PlayerOneCursor, Vector2.zero, CursorMode.ForceSoftware);
+        }
+        else
+        {
+            Cursor.SetCursor(PlayerTwoCursor, Vector2.zero, CursorMode.ForceSoftware);
+        }
+
         //TODO add sound for 3 2 1 Go
         IsInGame = true; //block input
         StartCoroutine(DisplayMiddleText("3"));
@@ -175,10 +223,12 @@ public class GameplayScript : MonoBehaviour {
 
     private void ResetGame()
     {
+        Debug.Log("resetgame");
+        //SoundSystem.PlayVictory();
         ScoreOne = 0;
         ScoreTwo = 0;
-        DisplayedScoreOne.text = ScoreOne.ToString();
-        DisplayedScoreTwo.text = ScoreTwo.ToString();
+        DisplayedScoreOne.text = ScoreOne.ToString() + " / 300";
+        DisplayedScoreTwo.text = ScoreTwo.ToString() + " / 300";
         StartCoroutine(OnBeginGame());
     }
 
@@ -186,6 +236,8 @@ public class GameplayScript : MonoBehaviour {
 
     public int CalcScore(Vector3 posMouse, Kdo kdo)
     {
+        if (kdo == null) return 0;
+
         int score = 0;
 
         Vector3 posKdo = /*Camera.main.WorldToScreenPoint*/(kdo.City.transform.position);
@@ -196,11 +248,12 @@ public class GameplayScript : MonoBehaviour {
         // score entre 0 et 120
 
         int scoreDist = 0;
+
         if (dist < 10) scoreDist = 4;
         else if (dist < 40) scoreDist = 3;
-        else if (dist < 80) scoreDist = 2;
-        else if (dist < 150) scoreDist = 1;
-        else scoreDist = 0;
+        //else if (dist < 80) scoreDist = 2;
+        //else if (dist < 150) scoreDist = 1;
+        //else scoreDist = 0;
 
         if(dist  < 40) SoundSystem.PlayGood();
         else SoundSystem.PlayBad();

@@ -45,7 +45,7 @@ public class SoundSystem : MonoBehaviour
 
     public void PlayVictory()
     {
-        sourceSound.PlayOneShot(SoundVictory);
+        if(Kdo.KdoInitialized) sourceSound.PlayOneShot(SoundVictory);
     }
 
     public void PlayShake()
