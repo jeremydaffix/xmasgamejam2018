@@ -16,6 +16,7 @@ public class GameplayScript : MonoBehaviour {
     public Text DisplayedCountry;
     public Text DisplayedScoreOne;
     public Text DisplayedScoreTwo;
+    public Text DisplayedMiddleText;
 
     [Header("Score Animation")]
     public AnimationCurve BumpAnimationCurve;
@@ -27,6 +28,7 @@ public class GameplayScript : MonoBehaviour {
     [Header("Gameplay")]
     private int ScoreOne;
     private int ScoreTwo;
+    private int ScoreMax;
     private bool IsInGame;
     private Kdo currentKdo;
     private bool PlayerOneTurn;
@@ -36,7 +38,7 @@ public class GameplayScript : MonoBehaviour {
         IsInGame = true;
         PlayerOneTurn = true;
         StartCoroutine(OnBeginGame());
-        
+        ScoreMax = 30; //TODO update
         ScoreOne = 0;
         ScoreTwo = 0;
         StartCoroutine(UpdateScoreOne());
@@ -66,13 +68,19 @@ public class GameplayScript : MonoBehaviour {
                 }
                 PlayerOneTurn = !PlayerOneTurn; //switch player
                 IsInGame = false;
+                if(ScoreOne >= ScoreMax || ScoreTwo >= ScoreMax)
+                {
+                    string player = "1";
+                    if (ScoreTwo >= ScoreMax) { player = "2"; }
+                    StartCoroutine(DisplayMiddleText("Joueur " + player + " gagnant!"));
+                }
             }
         }
     }
 
-    private IEnumerator DisplayCountry(string letter)
+    private IEnumerator DisplayCountry(string country)
     {
-        DisplayedCountry.text = letter;
+        DisplayedCountry.text = country;
         RiseInElapsed = 0.0f;
         float min = 0.3f;
         Vector3 minScale = new Vector3(min, min, 1.0f);
@@ -125,6 +133,23 @@ public class GameplayScript : MonoBehaviour {
 
         }
         yield return null;
+    }
+
+    private IEnumerator DisplayMiddleText(string message)
+    {
+        DisplayedMiddleText.text = message;
+        RiseInElapsed = 0.0f;
+        float min = 0.3f;
+        Vector3 minScale = new Vector3(min, min, 1.0f);
+        DisplayedMiddleText.transform.localScale = minScale;
+        while (RiseInElapsed != RiseInDuration)
+        {
+            yield return new WaitForEndOfFrame();
+            RiseInElapsed = Mathf.Clamp(RiseInElapsed + Time.deltaTime, 0.0f, RiseInDuration);
+            float scale = RiseInAnimationCurve.Evaluate(RiseInElapsed / RiseInDuration);
+            DisplayedMiddleText.transform.localScale = minScale + new Vector3(1.0f - min, 1.0f - min, 0.0f) * scale;
+
+        }
     }
 
     private IEnumerator OnBeginGame()
