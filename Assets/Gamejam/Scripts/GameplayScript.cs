@@ -51,7 +51,7 @@ public class GameplayScript : MonoBehaviour {
     void Start () {
         IsInGame = true;
         PlayerOneTurn = true;
-        UpdateCursor();
+        Cursor.SetCursor(PlayerOneCursor, Vector2.zero, CursorMode.ForceSoftware);
         GameEnded = false;
         StartCoroutine(OnBeginGame());
         ScoreMax = 300; //TODO update
