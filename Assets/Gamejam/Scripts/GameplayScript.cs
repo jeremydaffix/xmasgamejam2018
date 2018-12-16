@@ -17,6 +17,7 @@ public class GameplayScript : MonoBehaviour {
     public Text DisplayedScoreOne;
     public Text DisplayedScoreTwo;
     public Text DisplayedMiddleText;
+    public GameObject Map;
 
     [Header("Score Animation")]
     public AnimationCurve BumpAnimationCurve;
@@ -33,6 +34,11 @@ public class GameplayScript : MonoBehaviour {
     private Kdo currentKdo;
     private bool PlayerOneTurn;
     private bool GameEnded;
+
+
+    bool flagShake = false;
+
+
 
     // Use this for initialization
     void Start () {
@@ -67,13 +73,13 @@ public class GameplayScript : MonoBehaviour {
                     {
                         ScoreOne += WonScore;
                         DisplayedScoreOne.text = ScoreOne.ToString();
-                        Debug.Log("One: " + ScoreOne);
+                        //Debug.Log("One: " + ScoreOne);
                     }
                     else
                     {
                         ScoreTwo += WonScore;
                         DisplayedScoreTwo.text = ScoreTwo.ToString();
-                        Debug.Log("Two: " + ScoreTwo);
+                        //Debug.Log("Two: " + ScoreTwo);
                     }
                     PlayerOneTurn = !PlayerOneTurn; //switch player
                     IsInGame = false;
@@ -81,6 +87,12 @@ public class GameplayScript : MonoBehaviour {
                     {
                         GameEnded = true;
                     }
+                }
+
+
+                if(Input.GetKeyDown(KeyCode.Space))
+                {
+                    Shake();
                 }
             }
         } else
@@ -94,6 +106,12 @@ public class GameplayScript : MonoBehaviour {
                 ResetGame();
             }
         }
+    }
+
+
+    private void FixedUpdate()
+    {
+
     }
 
     private IEnumerator DisplayCountry(string country)
@@ -183,5 +201,31 @@ public class GameplayScript : MonoBehaviour {
         score = (diff + 1) * scoreDist * 10;
   
         return score;
-    }                                                                                                                 
+    }
+    
+
+
+
+    public void Shake()
+    {   
+        if (!flagShake)
+        {
+            //Debug.Log("SHAKE");
+            //Camera.main.GetComponent<CameraShake>().Shake();
+
+            iTween.ShakePosition(Map, iTween.Hash("x", 50.0f, "time", 1.5f, "delay", 0.0f));
+            iTween.ShakePosition(Map, iTween.Hash("y", 50.0f, "time", 1.5f, "delay", 0.0f));
+
+
+
+            flagShake = true;
+
+            Invoke("EnableShake", 5f);
+        }
+    }
+
+    void EnableShake()
+    {
+        flagShake = false;
+    }
 }
