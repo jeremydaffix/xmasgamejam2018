@@ -59,11 +59,13 @@ public class GameplayScript : MonoBehaviour {
                 Debug.Log("Pressed primary button." + Input.mousePosition);
                 if (PlayerOneTurn)
                 {
-                    ScoreOne += 10; //TODO add score here
+                    //ScoreOne += 10; //TODO add score here
+                    ScoreOne += CalcScore(Input.mousePosition, currentKdo);
                     UpdateScoreOne();
                 } else
                 {
-                    ScoreTwo += 10; //TODO add score here
+                    //ScoreTwo += 10; //TODO add score here
+                    ScoreOne += CalcScore(Input.mousePosition, currentKdo);
                     UpdateScoreTwo();
                 }
                 PlayerOneTurn = !PlayerOneTurn; //switch player
@@ -165,4 +167,43 @@ public class GameplayScript : MonoBehaviour {
         Kdo.GenerateKdos();
         IsInGame = false;
     }
+
+
+
+
+
+
+
+
+
+
+    public int CalcScore(Vector3 posMouse, Kdo kdo)
+    {
+        int score = 0;
+
+        Vector3 posKdo = /*Camera.main.WorldToScreenPoint*/(kdo.City.transform.position);
+
+        float dist = Vector3.Distance(posMouse, posKdo);
+        int diff = kdo.Difficulty;
+
+
+        // score entre 0 et 120
+
+        int scoreDist = 0;
+        if (dist < 10) scoreDist = 4;
+        else if (dist < 50) scoreDist = 3;
+        else if (dist < 100) scoreDist = 2;
+        else if (dist < 200) scoreDist = 1;
+        else scoreDist = 0;
+
+        score = (diff + 1) * scoreDist * 10;
+
+
+        Debug.Log("***CALCSCORE***");
+        Debug.Log(dist);
+        Debug.Log(score);
+
+
+        return score;
+    }                                                                                                                 
 }
