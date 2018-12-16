@@ -29,31 +29,42 @@ public class GameplayScript : MonoBehaviour {
     private int ScoreTwo;
     private bool IsInGame;
     private Kdo currentKdo;
+    private bool PlayerOneTurn;
 
     // Use this for initialization
     void Start () {
         IsInGame = true;
+        PlayerOneTurn = true;
         StartCoroutine(OnBeginGame());
         
-        ScoreOne = 30;
-        ScoreTwo = 34;
+        ScoreOne = 0;
+        ScoreTwo = 0;
         StartCoroutine(UpdateScoreOne());
         StartCoroutine(UpdateScoreTwo());
-
-        //IsInGame = false;
     }
 	
 	// Update is called once per frame
 	void Update () {
         if (!IsInGame)
         {
-            IsInGame = true;
             currentKdo = Kdo.DrawKdo(0);
             StartCoroutine(DisplayCountry(currentKdo.City.name));
-            Debug.Log(currentKdo.City.transform);
+            IsInGame = true;
+        } else
+        {
             if (Input.GetMouseButtonDown(0))
             {
                 Debug.Log("Pressed primary button." + Input.mousePosition);
+                if (PlayerOneTurn)
+                {
+                    ScoreOne += 10; //TODO add score here
+                    UpdateScoreOne();
+                } else
+                {
+                    ScoreTwo += 10; //TODO add score here
+                    UpdateScoreTwo();
+                }
+                PlayerOneTurn = !PlayerOneTurn; //switch player
                 IsInGame = false;
             }
         }
