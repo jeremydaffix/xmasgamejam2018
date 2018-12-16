@@ -16,7 +16,6 @@ public class GameplayScript : MonoBehaviour {
     public Text DisplayedCountry;
     public Text DisplayedScoreOne;
     public Text DisplayedScoreTwo;
-    public Image gift;
 
     [Header("Score Animation")]
     public AnimationCurve BumpAnimationCurve;
@@ -28,22 +27,35 @@ public class GameplayScript : MonoBehaviour {
     [Header("Gameplay")]
     private int ScoreOne;
     private int ScoreTwo;
+    private bool IsInGame;
+    private Kdo currentKdo;
 
     // Use this for initialization
     void Start () {
-        StartCoroutine(DisplayCountry("France"));
+        IsInGame = true;
+        StartCoroutine(OnBeginGame());
+        
         ScoreOne = 30;
         ScoreTwo = 34;
         StartCoroutine(UpdateScoreOne());
         StartCoroutine(UpdateScoreTwo());
 
+        IsInGame = false;
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetMouseButtonDown(0)) { 
-            Debug.Log("Pressed primary button." + Input.mousePosition);
-
+        if (!IsInGame)
+        {
+            IsInGame = true;
+            currentKdo = Kdo.DrawKdo(0);
+            StartCoroutine(DisplayCountry(currentKdo.City.name));
+            Debug.Log(currentKdo.City.transform);
+            if (Input.GetMouseButtonDown(0))
+            {
+                Debug.Log("Pressed primary button." + Input.mousePosition);
+                IsInGame = false;
+            }
         }
     }
 
@@ -102,5 +114,19 @@ public class GameplayScript : MonoBehaviour {
 
         }
         yield return null;
+    }
+
+    private IEnumerator OnBeginGame()
+    {
+        //TODO add sound for 3 2 1 Go
+        IsInGame = true; //block input
+        StartCoroutine(DisplayCountry("3"));
+        yield return new WaitForSeconds(1.0f);
+        StartCoroutine(DisplayCountry("2"));
+        yield return new WaitForSeconds(1.0f);
+        StartCoroutine(DisplayCountry("1"));
+        yield return new WaitForSeconds(1.0f);
+        Kdo.GenerateKdos();
+        IsInGame = false;
     }
 }
