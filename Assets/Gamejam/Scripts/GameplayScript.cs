@@ -40,7 +40,7 @@ public class GameplayScript : MonoBehaviour {
         StartCoroutine(UpdateScoreOne());
         StartCoroutine(UpdateScoreTwo());
 
-        IsInGame = false;
+        //IsInGame = false;
     }
 	
 	// Update is called once per frame
@@ -81,7 +81,7 @@ public class GameplayScript : MonoBehaviour {
         BumpElapsed = 0.0f;
         Vector3 bumpedScale = new Vector3(BumpMagnitude, BumpMagnitude, 0.0f);
         Vector3 minScale = new Vector3(1.0f, 1.0f, 1.0f);
-        DisplayedScoreOne.transform.localScale = minScale;
+        //DisplayedScoreOne.transform.localScale = minScale;
         while (BumpElapsed != BumpDuration)
         {
             yield return new WaitForEndOfFrame();
@@ -89,7 +89,7 @@ public class GameplayScript : MonoBehaviour {
             float value = BumpAnimationCurve.Evaluate(BumpElapsed / BumpDuration);
             if (value >= 0.5f)
                 DisplayedScoreOne.text = ScoreOne.ToString();
-            DisplayedScoreOne.transform.localScale = minScale + bumpedScale * value;
+            //DisplayedScoreOne.transform.localScale = minScale + bumpedScale * value;
             DisplayedScoreOne.color = Color.Lerp(Color.white, BumpColor, value);
 
         }
@@ -101,7 +101,7 @@ public class GameplayScript : MonoBehaviour {
         BumpElapsed = 0.0f;
         Vector3 bumpedScale = new Vector3(BumpMagnitude, BumpMagnitude, 0.0f);
         Vector3 minScale = new Vector3(1.0f, 1.0f, 1.0f);
-        DisplayedScoreTwo.transform.localScale = minScale;
+        //DisplayedScoreTwo.transform.localScale = minScale;
         while (BumpElapsed != BumpDuration)
         {
             yield return new WaitForEndOfFrame();
@@ -109,7 +109,7 @@ public class GameplayScript : MonoBehaviour {
             float value = BumpAnimationCurve.Evaluate(BumpElapsed / BumpDuration);
             if (value >= 0.5f)
                 DisplayedScoreTwo.text = ScoreTwo.ToString();
-            DisplayedScoreTwo.transform.localScale = minScale + bumpedScale * value;
+            //DisplayedScoreTwo.transform.localScale = minScale + bumpedScale * value;
             DisplayedScoreTwo.color = Color.Lerp(Color.white, BumpColor, value);
 
         }

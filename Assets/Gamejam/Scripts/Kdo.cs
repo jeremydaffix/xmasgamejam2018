@@ -49,9 +49,6 @@ public class Kdo {
         return l.ElementAt(Random.Range(0, l.Count));
     }
 
-
-
-
     public Kdo(string cityN, int difficulty, string name = "", Image photo = null)
     {
         this.name = name;
