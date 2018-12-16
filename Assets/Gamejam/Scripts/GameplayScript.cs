@@ -42,6 +42,7 @@ public class GameplayScript : MonoBehaviour {
     private bool PlayerOneTurn;
     private bool GameEnded;
 
+    public SoundSystem SoundSystem;
 
     bool flagShake = false;
 
@@ -109,6 +110,7 @@ public class GameplayScript : MonoBehaviour {
             string player = "1";
             if (ScoreTwo >= ScoreMax) { player = "2"; }
             StartCoroutine(DisplayMiddleText("Joueur " + player + " gagnant!"));
+            SoundSystem.PlayVictory();
             if (Input.GetMouseButtonDown(0))
             {
                 GameEnded = false;
@@ -195,10 +197,13 @@ public class GameplayScript : MonoBehaviour {
 
         int scoreDist = 0;
         if (dist < 10) scoreDist = 4;
-        else if (dist < 50) scoreDist = 3;
-        else if (dist < 100) scoreDist = 2;
-        else if (dist < 200) scoreDist = 1;
+        else if (dist < 40) scoreDist = 3;
+        else if (dist < 80) scoreDist = 2;
+        else if (dist < 150) scoreDist = 1;
         else scoreDist = 0;
+
+        if(dist  < 40) SoundSystem.PlayGood();
+        else SoundSystem.PlayBad();
 
         score = (diff + 1) * scoreDist * 10;
   
@@ -215,6 +220,8 @@ public class GameplayScript : MonoBehaviour {
         {
             //Debug.Log("SHAKE");
             //Camera.main.GetComponent<CameraShake>().Shake();
+
+            SoundSystem.PlayShake();
 
             iTween.ShakePosition(Map, iTween.Hash("x", 50.0f, "time", 1.5f, "delay", 0.0f));
             iTween.ShakePosition(Map, iTween.Hash("y", 50.0f, "time", 1.5f, "delay", 0.0f));
