@@ -110,7 +110,7 @@ public class GameplayScript : MonoBehaviour {
             string player = "1";
             if (ScoreTwo >= ScoreMax) { player = "2"; }
             StartCoroutine(DisplayMiddleText("Joueur " + player + " gagnant!"));
-            SoundSystem.PlayVictory();
+            //SoundSystem.PlayVictory();
             if (Input.GetMouseButtonDown(0))
             {
                 GameEnded = false;
