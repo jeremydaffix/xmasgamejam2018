@@ -28,9 +28,13 @@ public class Kdo {
         new Kdo("Luxembourg", 0);
         new Kdo("Montreal", 0);
         new Kdo("New York", 0);
+        new Kdo("Tokyo", 0);
 
         new Kdo("Pretoria", 1);
-        new Kdo("Montpellier", 1);
+        new Kdo("Maison des devs", 1);
+        new Kdo("Chalet du pere Noel", 1);
+        new Kdo("Bogota", 1);
+        new Kdo("Alger", 1);
 
         new Kdo("Oulan Bator", 2);
         new Kdo("Sucre", 2);

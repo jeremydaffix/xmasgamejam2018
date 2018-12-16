@@ -69,7 +69,7 @@ public class GameplayScript : MonoBehaviour {
         {
             if (!IsInGame)
             {
-                currentKdo = Kdo.DrawKdo(0);
+                currentKdo = Kdo.DrawKdo(Random.Range(0,3));
                 StartCoroutine(DisplayCountry(currentKdo.City.name));
                 IsInGame = true;
             }
