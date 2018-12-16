@@ -2,29 +2,70 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class Kdo {
+
+    public static List<Kdo> Kdos1 = new List<Kdo>();
+    public static List<Kdo> Kdos2 = new List<Kdo>();
+    public static List<Kdo> Kdos3 = new List<Kdo>();
+
 
     string name;
     Image photo;
     City city;
     int difficulty; // 0 - 2
 
-    public Kdo(string name, City city, int difficulty, Image photo = null)
+
+    public static void GenerateKdos()
     {
-        this.name = name;
-        this.photo = photo;
-        this.city = city;
-        this.difficulty = difficulty;
+        new Kdo("Paris", 0);
+        new Kdo("Berlin", 0);
+        new Kdo("Dublin", 0);
+        new Kdo("Bruxelles", 0);
+        new Kdo("Madrid", 0);
+        new Kdo("London", 0);
+        new Kdo("Luxembourg", 0);
+        new Kdo("Montreal", 0);
+        new Kdo("New York", 0);
+
+        new Kdo("Pretoria", 1);
+        new Kdo("Montpellier", 1);
+
+        new Kdo("Oulan Bator", 2);
+        new Kdo("Sucre", 2);
     }
 
-    public Kdo(string name, string cityN, int difficulty, Image photo = null)
+
+
+    public static Kdo DrawKdo(int diff)
+    {
+        List<Kdo> l;
+
+        if (diff == 0) l = Kdos1;
+        else if (diff == 1) l = Kdos2;
+        else l = Kdos3;
+
+        return l.ElementAt(Random.Range(0, l.Count));
+    }
+
+
+
+
+    public Kdo(string cityN, int difficulty, string name = "", Image photo = null)
     {
         this.name = name;
         this.photo = photo;
         this.city = City.Cities[cityN];
         this.difficulty = difficulty;
+
+
+        if (difficulty == 0) Kdos1.Add(this);
+        else if (difficulty == 1) Kdos2.Add(this);
+        else if (difficulty == 2) Kdos3.Add(this);
     }
+
+
 
 
     public string Name
